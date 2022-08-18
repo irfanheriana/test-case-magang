@@ -1,7 +1,10 @@
 <?php
 
+use App\Models\Employee;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\EmployeeController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,11 +18,13 @@ use App\Http\Controllers\EmployeeController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    $jumlahpegawai = Employee::count();
+
+    return view('welcome', compact('jumlahpegawai'));
+})->middleware('auth');
 
 // route untuk data pegawai
-Route::get('/pegawai',[EmployeeController::class, 'index'])->name('pegawai');
+Route::get('/pegawai',[EmployeeController::class, 'index'])->name('pegawai')->middleware('auth');
 
 // menampilkan tabel pegawai
 Route::get('/tambahpegawai',[EmployeeController::class, 'tambahpegawai'])->name('tambahpegawai');
@@ -37,6 +42,20 @@ Route::get('/deletepegawai/{id}',[EmployeeController::class, 'deletepegawai'])->
 Route::get('/exportpdf',[EmployeeController::class, 'exportpdf'])->name('exportpdf');
 // export Excell
 Route::get('/exportexcell',[EmployeeController::class, 'exportexcell'])->name('exportexcell');
+
+
+
+// login
+Route::get('/login',[LoginController::class, 'login'])->name('login');
+Route::post('/loginproses',[LoginController::class, 'loginproses'])->name('loginproses');
+
+// register
+Route::get('/register',[LoginController::class, 'register'])->name('register');
+Route::post('/registeruser',[LoginController::class, 'registeruser'])->name('registeruser');
+
+// logout
+Route::get('/logout',[LoginController::class, 'logout'])->name('logout');
+
 
 
 
